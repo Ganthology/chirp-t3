@@ -24,6 +24,11 @@ const Home: NextPage = () => {
           {!user.isSignedIn && <SignInButton />}
           {!!user.isSignedIn && <SignOutButton />}
         </div>
+        <div>
+          {data?.map((p) => (
+            <div key={p.id}>{p.content}</div>
+          ))}
+        </div>
       </main>
     </>
   );

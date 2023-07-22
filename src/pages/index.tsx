@@ -4,6 +4,26 @@ import Head from "next/head";
 import Link from "next/link";
 import { api } from "~/utils/api";
 
+const CreatePostWizard = () => {
+  const { user } = useUser();
+
+  if (!user) return null;
+
+  return (
+    <div className="flex gap-2">
+      <img
+        src={user.profileImageUrl}
+        alt="User Profile Image"
+        className="h-14 w-14 rounded-full"
+      />
+      <input
+        placeholder="Type some emojis!"
+        className="grow bg-transparent px-2 focus:outline"
+      />
+    </div>
+  );
+};
+
 const Home: NextPage = () => {
   const user = useUser();
 
@@ -31,7 +51,7 @@ const Home: NextPage = () => {
           </div>
           <div className="border-b border-slate-400 p-4">
             {!user.isSignedIn && <SignInButton />}
-            {!!user.isSignedIn && <SignOutButton />}
+            {!!user.isSignedIn && <CreatePostWizard />}
           </div>
           <div className="">
             {data?.map((p) => (

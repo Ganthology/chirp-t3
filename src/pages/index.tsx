@@ -1,4 +1,4 @@
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { type RouterOutputs, api } from "~/utils/api";
@@ -16,7 +16,15 @@ const CreatePostWizard = () => {
 
   const [input, setInput] = useState("");
 
-  const { mutate } = api.posts.create.useMutation();
+  const ctx = api.useContext();
+
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: () => {
+      setInput("");
+      // Tell typescript to ignore this, we want it run in the background
+      void ctx.posts.getAll.invalidate();
+    },
+  });
 
   if (!user) return null;
 
@@ -31,11 +39,12 @@ const CreatePostWizard = () => {
       />
       <input
         placeholder="Type some emojis!"
-        className="grow bg-transparent px-2 focus:outline"
+        className="grow bg-transparent px-2 focus:outline-none"
         value={input}
         onChange={(e) => {
           setInput(e.target.value);
         }}
+        disabled={isPosting}
       />
       <button onClick={() => mutate({ content: input })}>Post</button>
     </div>
@@ -108,8 +117,13 @@ const Home: NextPage = () => {
           </div>
           <div className="border-b border-slate-400 p-4">
             {!isSignedIn && <SignInButton />}
-            {isSignedIn && <CreatePostWizard />}
+            {isSignedIn && <SignOutButton />}
           </div>
+          {isSignedIn && (
+            <div className="border-b border-slate-400 p-4">
+              <CreatePostWizard />
+            </div>
+          )}
           <Feed />
         </div>
       </main>

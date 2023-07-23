@@ -6,7 +6,7 @@ import {
 
 import { TRPCError } from "@trpc/server";
 import type { User } from "@clerk/nextjs/dist/types/server";
-import { clerkClient } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 import { z } from "zod";
 
 const filterUserForClient = (user: User) => ({
